@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>현우진 시발점 학습 트래커</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --color-bg:#f5f4f0;--color-surface:#faf9f6;--color-surface-2:#ffffff;
+  --color-surface-offset:#eeece7;--color-border:#dddbd5;--color-divider:#e3e1db;
+  --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+  --color-primary:#2e7d6b;--color-primary-light:#d3ebe5;--color-primary-hover:#1f5e50;
+  --color-math1:#3b6fa0;--color-math1-light:#d1e4f5;
+  --color-math2:#6b4fa0;--color-math2-light:#e4d8f5;
+  --color-prob:#a07030;--color-prob-light:#f5e9d1;
+  --color-step2:#c0392b;--color-step2-light:#fde8e6;
+  --color-done-bg:#e8f5e2;--color-done-border:#7ab368;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 12px rgba(0,0,0,.09);--shadow-lg:0 8px 24px rgba(0,0,0,.11);
+  --radius-sm:6px;--radius-md:10px;--radius-lg:14px;--radius-xl:18px;
+  --font-body:'Noto Sans KR','Satoshi',sans-serif;
+}
+[data-theme="dark"]{
+  --color-bg:#181714;--color-surface:#1e1c1a;--color-surface-2:#232120;
+  --color-surface-offset:#2a2826;--color-border:#3a3835;--color-divider:#2f2d2b;
+  --color-text:#d4d2ce;--color-text-muted:#857e77;--color-text-faint:#605c57;
+  --color-primary:#4ca88e;--color-primary-light:#1e3d35;--color-primary-hover:#61c4a6;
+  --color-math1:#6499cc;--color-math1-light:#1e3250;
+  --color-math2:#9b7acc;--color-math2-light:#2e1e50;
+  --color-prob:#cc9b50;--color-prob-light:#3e2e10;
+  --color-step2:#e06060;--color-step2-light:#40181a;
+  --color-done-bg:#1e3320;--color-done-border:#5a9b50;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.28);--shadow-md:0 4px 12px rgba(0,0,0,.38);--shadow-lg:0 8px 24px rgba(0,0,0,.48);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--color-bg);color:var(--color-text);font-size:14px;line-height:1.5;min-height:100vh;padding:24px 16px 60px;}
+.header{max-width:900px;margin:0 auto 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.header-title h1{font-size:clamp(17px,3vw,23px);font-weight:700;letter-spacing:-.3px;}
+.header-title p{font-size:11px;color:var(--color-text-muted);margin-top:3px;}
+.header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.icon-btn{background:var(--color-surface-offset);border:1px solid var(--color-border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--color-text-muted);transition:background .18s;}
+.icon-btn:hover{background:var(--color-divider);color:var(--color-text);}
+.stats-row{max-width:900px;margin:0 auto 14px;display:flex;gap:10px;flex-wrap:wrap;}
+.stat-card{flex:1;min-width:100px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:10px 14px;box-shadow:var(--shadow-sm);}
+.stat-card .num{font-size:22px;font-weight:700;color:var(--color-primary);line-height:1;}
+.stat-card .lbl{font-size:11px;color:var(--color-text-muted);margin-top:2px;}
+.prog-wrap{max-width:900px;margin:0 auto 18px;background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-lg);padding:12px 16px;box-shadow:var(--shadow-sm);}
+.prog-title{font-size:11px;font-weight:700;color:var(--color-text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px;}
+.prog-bar-bg{background:var(--color-surface-offset);border-radius:20px;height:10px;overflow:hidden;}
+.prog-bar-fill{height:100%;background:linear-gradient(90deg,var(--color-primary),var(--color-math1));border-radius:20px;transition:width .4s cubic-bezier(.16,1,.3,1);}
+.prog-bar-row{display:flex;justify-content:space-between;font-size:11px;color:var(--color-text-muted);margin-top:5px;}
+.legend{max-width:900px;margin:0 auto 14px;display:flex;flex-wrap:wrap;gap:8px;}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--color-text-muted);}
+.legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0;}
+.month-heading{max-width:900px;margin:20px auto 8px;font-size:14px;font-weight:700;color:var(--color-text);display:flex;align-items:center;gap:8px;}
+.month-heading::after{content:'';flex:1;height:1px;background:var(--color-divider);}
+.calendar{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:8px;}
+.day-card{background:var(--color-surface);border:1.5px solid var(--color-border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm);transition:box-shadow .18s,border-color .18s;}
+.day-card:hover{box-shadow:var(--shadow-md);}
+.day-card.is-done{background:var(--color-done-bg);border-color:var(--color-done-border);}
+.day-card.is-heavy{border-left:3.5px solid var(--color-step2);}
+.day-header{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;user-select:none;border-bottom:1px solid var(--color-divider);}
+.day-header:hover{background:var(--color-surface-offset);}
+.is-done .day-header{background:transparent;}
+.day-check{width:22px;height:22px;border:2px solid var(--color-border);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;cursor:pointer;transition:background .16s,border-color .16s;}
+.is-done .day-check{background:var(--color-done-border);border-color:var(--color-done-border);color:#fff;}
+.day-date{font-weight:700;font-size:14px;min-width:68px;}
+.day-date .wd{font-size:11px;font-weight:400;color:var(--color-text-muted);margin-left:4px;}
+.day-badges{display:flex;gap:5px;flex-wrap:wrap;flex:1;}
+.badge{font-size:11px;font-weight:500;padding:2px 7px;border-radius:20px;white-space:nowrap;}
+.badge-m1{background:var(--color-math1-light);color:var(--color-math1);}
+.badge-m2{background:var(--color-math2-light);color:var(--color-math2);}
+.badge-pr{background:var(--color-prob-light);color:var(--color-prob);}
+.badge-s2{background:var(--color-step2-light);color:var(--color-step2);font-weight:700;}
+.badge-ms{background:var(--color-primary-light);color:var(--color-primary);font-weight:700;}
+.chevron{color:var(--color-text-faint);font-size:11px;transition:transform .2s;flex-shrink:0;}
+.is-open .chevron{transform:rotate(180deg);}
+.day-body{display:none;padding:12px 14px 14px;flex-direction:column;gap:8px;}
+.is-open .day-body{display:flex;}
+.subj-row{display:flex;gap:8px;align-items:flex-start;}
+.subj-lbl{font-size:11px;font-weight:700;min-width:36px;padding:3px 0;text-transform:uppercase;letter-spacing:.3px;}
+.task-list{display:flex;flex-direction:column;gap:5px;flex:1;}
+.task-item{display:flex;align-items:flex-start;gap:7px;cursor:pointer;}
+.task-chk{width:16px;height:16px;border:1.5px solid var(--color-border);border-radius:4px;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;font-size:10px;transition:background .14s,border-color .14s;}
+.task-item.ck .task-chk{background:var(--color-primary);border-color:var(--color-primary);color:#fff;}
+.task-item.ck .task-txt{text-decoration:line-through;color:var(--color-text-faint);}
+.task-txt{font-size:13px;color:var(--color-text);line-height:1.4;}
+.task-txt.s1{color:var(--color-math1);}
+.task-txt.s2{color:var(--color-step2);font-weight:600;}
+.task-txt.s1p{color:var(--color-prob);}
+.task-txt.s2p{color:var(--color-step2);font-weight:600;}
+.save-indicator{position:fixed;bottom:18px;right:18px;background:var(--color-primary);color:#fff;font-size:12px;font-weight:600;padding:7px 14px;border-radius:9999px;box-shadow:var(--shadow-md);opacity:0;transition:opacity .3s;pointer-events:none;z-index:100;}
+.save-indicator.show{opacity:1;}
+.complete-sec{max-width:900px;margin:20px auto 0;background:var(--color-primary-light);border:1.5px solid var(--color-primary);border-radius:var(--radius-lg);padding:14px 18px;text-align:center;}
+.complete-sec h2{font-size:15px;font-weight:700;color:var(--color-primary);}
+.complete-sec p{font-size:12px;color:var(--color-text-muted);margin-top:3px;}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:200;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--color-surface);border:1px solid var(--color-border);border-radius:var(--radius-xl);padding:24px;max-width:340px;width:92%;box-shadow:var(--shadow-lg);}
+.modal h3{font-size:15px;font-weight:700;margin-bottom:8px;}
+.modal p{font-size:13px;color:var(--color-text-muted);margin-bottom:16px;line-height:1.6;}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end;}
+.btn{font-size:13px;font-weight:600;padding:7px 16px;border-radius:var(--radius-md);cursor:pointer;border:none;}
+.btn-ghost{background:var(--color-surface-offset);color:var(--color-text);}
+.btn-danger{background:#c0392b;color:#fff;}
+.btn-primary{background:var(--color-primary);color:#fff;}
+
+/* ── CELEBRATION OVERLAY ── */
+#celebrate{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.82);backdrop-filter:blur(6px);}
+#celebrate.show{display:flex;}
+#celebrate canvas{position:fixed;inset:0;pointer-events:none;z-index:501;}
+.cel-card{position:relative;z-index:502;background:#fff;border-radius:24px;padding:36px 32px 28px;max-width:380px;width:92%;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.5);animation:popIn .5s cubic-bezier(.16,1,.3,1) both;}
+@keyframes popIn{from{opacity:0;transform:scale(.7) translateY(30px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.cel-emoji{font-size:64px;line-height:1;margin-bottom:12px;display:block;animation:bounce 1s ease infinite alternate;}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.cel-title{font-size:22px;font-weight:700;color:#1a1a1a;margin-bottom:10px;letter-spacing:-.5px;}
+.cel-msg{font-size:14px;color:#555;line-height:1.75;margin-bottom:20px;}
+.cel-msg strong{color:#2e7d6b;}
+.cel-stars{font-size:24px;letter-spacing:4px;margin-bottom:18px;}
+.cel-quote{font-size:13px;color:#888;font-style:italic;border-top:1px solid #eee;padding-top:14px;margin-top:4px;line-height:1.7;}
+.cel-close{margin-top:18px;background:linear-gradient(135deg,#2e7d6b,#3b6fa0);color:#fff;border:none;border-radius:9999px;padding:10px 28px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.cel-close:hover{opacity:.85;}
+
+@media(max-width:600px){
+  .stats-row{gap:6px;}
+  .stat-card{min-width:80px;padding:8px 10px;}
+  .stat-card .num{font-size:18px;}
+  .day-date{min-width:56px;font-size:13px;}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-title">
+    <h1>📚 현우진 시발점 학습 트래커</h1>
+    <p>수학Ⅰ T.7 · 확통 T.3 완료 기준 &nbsp;|&nbsp; 2026년 5월 14일 시작 &nbsp;|&nbsp; 진도가 자동 저장됩니다</p>
+  </div>
+  <div class="header-right">
+    <button class="icon-btn" id="reset-btn" title="진도 초기화">🗑️</button>
+    <button class="icon-btn" data-theme-toggle aria-label="다크모드 전환">🌙</button>
+  </div>
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="num" id="s-days">0</div><div class="lbl">완료 일수</div></div>
+  <div class="stat-card"><div class="num" id="s-tasks">0</div><div class="lbl">강의 체크</div></div>
+  <div class="stat-card"><div class="num" id="s-remain">28</div><div class="lbl">남은 일수</div></div>
+  <div class="stat-card"><div class="num" id="s-pct">0%</div><div class="lbl">진행률</div></div>
+</div>
+
+<div class="prog-wrap">
+  <div class="prog-title">전체 진행률</div>
+  <div class="prog-bar-bg"><div class="prog-bar-fill" id="prog-bar" style="width:0%"></div></div>
+  <div class="prog-bar-row">
+    <span id="prog-lbl">0 / 28일 완료</span>
+    <span>🏁 6월 10일 목표</span>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#3b6fa0"></div>수학Ⅰ</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#6b4fa0"></div>수학Ⅱ</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#a07030"></div>확통</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#c0392b"></div>Step 2 포함</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#7ab368"></div>완료</div>
+</div>
+
+<div id="root"></div>
+
+<div class="complete-sec">
+  <h2>🎉 전체 완강 목표: 2026년 6월 10일</h2>
+  <p>수학Ⅰ 5/24 &nbsp;·&nbsp; 확통(부록 포함) 6/2 &nbsp;·&nbsp; 수학Ⅱ 6/10</p>
+</div>
+
+<div class="save-indicator" id="save-ind">저장됨 ✓</div>
+
+<!-- Reset modal (normal) -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <h3>진도를 초기화할까요?</h3>
+    <p>모든 체크 기록이 삭제됩니다. 되돌릴 수 없습니다.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" id="modal-cancel">취소</button>
+      <button class="btn btn-danger" id="modal-confirm">초기화</button>
+    </div>
+  </div>
+</div>
+
+<!-- Celebration overlay -->
+<div id="celebrate">
+  <canvas id="confetti-canvas"></canvas>
+  <div class="cel-card">
+    <span class="cel-emoji">🏆</span>
+    <div class="cel-stars">⭐⭐⭐⭐⭐</div>
+    <div class="cel-title">시발점 완전 정복!</div>
+    <div class="cel-msg">
+      수학Ⅰ · 수학Ⅱ · 확률과 통계,<br>
+      28일 동안 <strong>단 하루도 빠짐없이</strong> 해냈어.<br><br>
+      이 시간이 쌓여서<br>
+      수능장에서 네 손이 먼저 움직일 거야. 🖊️
+    </div>
+    <div class="cel-quote">
+      "수능은 결국 꾸준함을 증명하는 날이야.<br>넌 이미 그 증명을 시작했어."<br><br>
+      — 다음 도전도 응원할게. 화이팅! 💪
+    </div>
+    <button class="cel-close" id="cel-close-btn">새로운 도전 시작하기 →</button>
+  </div>
+</div>
+
+<script>
+const STORE_KEY='hwj_sibal_v1';
+const DAYS=[
+  {date:'5/14',wd:'목',heavy:true,math:['수1 Theme 8','수1 Theme 9','Step 1 – Theme 8, 9','Step 2 – Chapter 1'],prob:['확통 Theme 4']},
+  {date:'5/15',wd:'금',heavy:true,math:['수1 Theme 10','수1 Theme 11','Step 1 – Theme 10, 11'],prob:['확통 Theme 5','Step 1 – Theme 4, 5','Step 2 – Theme 1~5']},
+  {date:'5/16',wd:'토',math:['수1 Theme 12','수1 Theme 13','Step 1 – Theme 12, 13'],prob:['확통 Theme 6']},
+  {date:'5/17',wd:'일',math:['수1 Theme 14','수1 Theme 15'],prob:['확통 Theme 7']},
+  {date:'5/18',wd:'월',math:['수1 Theme 16','Step 1 – Theme 14, 15, 16','수1 Theme 17'],prob:['확통 Theme 8','Step 1 – Theme 6, 7, 8']},
+  {date:'5/19',wd:'화',heavy:true,math:['수1 Theme 18','수1 Theme 19','Step 1 – Theme 17, 18, 19','Step 2 – Chapter 2'],prob:['확통 Theme 9']},
+  {date:'5/20',wd:'수',math:['수1 Theme 20','수1 Theme 21'],prob:['확통 Theme 10','Step 1 – Theme 9, 10']},
+  {date:'5/21',wd:'목',math:['수1 Theme 22','수1 Theme 23'],prob:['확통 Theme 11']},
+  {date:'5/22',wd:'금',heavy:true,math:['수1 Theme 24','Step 1 – Theme 20~24','수1 Theme 25'],prob:['확통 Theme 12','Step 1 – Theme 11, 12','Step 2 – Theme 6~12']},
+  {date:'5/23',wd:'토',math:['수1 Theme 26','Step 1 – Theme 25, 26','수1 Theme 27'],prob:['확통 Theme 13']},
+  {date:'5/24',wd:'일',heavy:true,ms:'수1 완강 🏁',math:['수1 Theme 28','Step 1 – Theme 27, 28','Step 2 – Chapter 3'],prob:['확통 Theme 14']},
+  {date:'5/25',wd:'월',math:['수2 Theme 1','수2 Theme 2'],prob:['확통 Theme 15','Step 1 – Theme 13, 14, 15']},
+  {date:'5/26',wd:'화',math:['수2 Theme 3','수2 Theme 4','Step 1 – Theme 1, 2, 3, 4'],prob:['확통 Theme 16']},
+  {date:'5/27',wd:'수',math:['수2 Theme 5','수2 Theme 6'],prob:['확통 Theme 17','Step 1 – Theme 16, 17']},
+  {date:'5/28',wd:'목',heavy:true,math:['수2 Theme 7','Step 1 – Theme 5, 6, 7','Step 2 – Theme 1~7','수2 Theme 8'],prob:['확통 Theme 18']},
+  {date:'5/29',wd:'금',heavy:true,math:['수2 Theme 9','Step 1 – Theme 8, 9','수2 Theme 10'],prob:['확통 Theme 19','Step 1 – Theme 18, 19','Step 2 – Theme 13~19']},
+  {date:'5/30',wd:'토',heavy:true,math:['수2 Theme 11','수2 Theme 12','Step 1 – Theme 10, 11, 12','Step 2 – Theme 8~12'],prob:['확통 부록 Theme 1','Step 1 – 부록 Theme 1']},
+  {date:'5/31',wd:'일',math:['수2 Theme 13','수2 Theme 14','Step 1 – Theme 13, 14'],prob:['확통 부록 Theme 2','Step 1 – 부록 Theme 2']},
+  {date:'6/1',wd:'월',math:['수2 Theme 15','수2 Theme 16','Step 1 – Theme 15, 16'],prob:['확통 부록 Theme 3']},
+  {date:'6/2',wd:'화',heavy:true,ms:'확통 완강 🏁',math:['수2 Theme 17','수2 Theme 18'],prob:['확통 부록 Theme 4','Step 1 – 부록 Theme 3, 4','Step 2 – 경우의 수']},
+  {date:'6/3',wd:'수',math:['수2 Theme 19','Step 1 – Theme 17, 18, 19','수2 Theme 20'],prob:[]},
+  {date:'6/4',wd:'목',math:['수2 Theme 21','Step 1 – Theme 20, 21','수2 Theme 22'],prob:[]},
+  {date:'6/5',wd:'금',heavy:true,math:['수2 Theme 23','수2 Theme 24','Step 1 – Theme 22, 23, 24','Step 2 – Theme 13~24'],prob:[]},
+  {date:'6/6',wd:'토',math:['수2 Theme 25','수2 Theme 26','Step 1 – Theme 25, 26'],prob:[]},
+  {date:'6/7',wd:'일',math:['수2 Theme 27','수2 Theme 28'],prob:[]},
+  {date:'6/8',wd:'월',math:['수2 Theme 29','Step 1 – Theme 27, 28, 29','수2 Theme 30'],prob:[]},
+  {date:'6/9',wd:'화',math:['수2 Theme 31','Step 1 – Theme 30, 31','수2 Theme 32'],prob:[]},
+  {date:'6/10',wd:'수',heavy:true,ms:'수2 완강 · 전체 완강 🎉',math:['수2 Theme 33','Step 1 – Theme 32, 33','Step 2 – Theme 25~33'],prob:[]},
+];
+
+let state={dayDone:{},taskDone:{}};
+function loadState(){try{const r=localStorage.getItem(STORE_KEY);if(r)state=JSON.parse(r);}catch(e){state={dayDone:{},taskDone:{}};}}
+function saveState(){try{localStorage.setItem(STORE_KEY,JSON.stringify(state));}catch(e){}showSaveToast();}
+function showSaveToast(){const el=document.getElementById('save-ind');el.classList.add('show');clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),1500);}
+
+function isS2(t){return t.startsWith('Step 2');}
+function isS1(t){return t.startsWith('Step 1');}
+function subjOf(d){return d.date<='5/24'?'m1':'m2';}
+function taskCls(subj,txt){
+  if(subj==='math'){if(isS2(txt))return 's2';if(isS1(txt))return 's1';}
+  else{if(isS2(txt))return 's2p';if(isS1(txt))return 's1p';}
+  return '';
+}
+
+function renderBadges(d){
+  const s=subjOf(d);let h='';
+  if(d.math&&d.math.length){
+    const themes=d.math.filter(t=>!isS1(t)&&!isS2(t));
+    const s1=d.math.filter(t=>isS1(t)),s2=d.math.filter(t=>isS2(t));
+    const lbl=s==='m1'?'수1':'수2';
+    if(themes.length)h+=`<span class="badge badge-${s}">${lbl} ×${themes.length}</span>`;
+    if(s1.length)h+=`<span class="badge badge-${s}" style="opacity:.7">Step 1</span>`;
+    if(s2.length)h+=`<span class="badge badge-s2">Step 2</span>`;
+  }
+  if(d.prob&&d.prob.length){
+    const themes=d.prob.filter(t=>!isS1(t)&&!isS2(t));
+    const s1=d.prob.filter(t=>isS1(t)),s2=d.prob.filter(t=>isS2(t));
+    if(themes.length)h+=`<span class="badge badge-pr">확통 ×${themes.length}</span>`;
+    if(s1.length)h+=`<span class="badge badge-pr" style="opacity:.7">Step 1</span>`;
+    if(s2.length)h+=`<span class="badge badge-s2">Step 2</span>`;
+  }
+  if(d.ms)h+=`<span class="badge badge-ms">${d.ms}</span>`;
+  return h;
+}
+function renderTaskItem(date,subj,idx,txt){
+  const key=`${date}__${subj}__${idx}`;
+  const ck=state.taskDone[key]?'ck':'';
+  const cls=taskCls(subj,txt);
+  return `<div class="task-item ${ck}" data-key="${key}"><div class="task-chk">${ck?'✓':''}</div><div class="task-txt ${cls}">${txt}</div></div>`;
+}
+function renderDay(d,i){
+  const done=state.dayDone[d.date]?'is-done':'';
+  const heavy=d.heavy?'is-heavy':'';
+  const s=subjOf(d);const mlbl=s==='m1'?'수1':'수2';
+  let body='';
+  if(d.math&&d.math.length){
+    body+=`<div class="subj-row"><div class="subj-lbl" style="color:var(--color-${s==='m1'?'math1':'math2'})">${mlbl}</div><div class="task-list">${d.math.map((t,j)=>renderTaskItem(d.date,'math',j,t)).join('')}</div></div>`;
+  }
+  if(d.prob&&d.prob.length){
+    body+=`<div class="subj-row"><div class="subj-lbl" style="color:var(--color-prob)">확통</div><div class="task-list">${d.prob.map((t,j)=>renderTaskItem(d.date,'prob',j,t)).join('')}</div></div>`;
+  }
+  return `<div class="day-card ${done} ${heavy}" id="dc-${i}">
+    <div class="day-header" data-idx="${i}" data-date="${d.date}">
+      <div class="day-check" data-chkday="${i}" data-date="${d.date}">${done?'✓':''}</div>
+      <div class="day-date">${d.date}<span class="wd">${d.wd}</span></div>
+      <div class="day-badges">${renderBadges(d)}</div>
+      <div class="chevron">▼</div>
+    </div>
+    <div class="day-body">${body}</div>
+  </div>`;
+}
+function build(){
+  const root=document.getElementById('root');
+  let html='',curMonth='',calOpen=false;
+  DAYS.forEach((d,i)=>{
+    const m=d.date.split('/')[0];
+    if(m!==curMonth){
+      if(calOpen)html+='</div>';
+      curMonth=m;
+      const lbl=m==='5'?'5월 — 수학Ⅰ & 확통':'6월 — 수학Ⅱ & 확통 마무리';
+      html+=`<div class="month-heading">${lbl}</div><div class="calendar">`;
+      calOpen=true;
+    }
+    html+=renderDay(d,i);
+  });
+  if(calOpen)html+='</div>';
+  root.innerHTML=html;
+}
+
+document.getElementById('root').addEventListener('click',function(e){
+  const chk=e.target.closest('[data-chkday]');
+  if(chk){e.stopPropagation();const idx=parseInt(chk.dataset.chkday),date=chk.dataset.date;state.dayDone[date]=!state.dayDone[date];saveState();rebuildDay(idx);updateStats();return;}
+  const hdr=e.target.closest('[data-idx]');
+  if(hdr){const idx=parseInt(hdr.dataset.idx);document.getElementById('dc-'+idx).classList.toggle('is-open');return;}
+  const task=e.target.closest('.task-item');
+  if(task){const key=task.dataset.key;state.taskDone[key]=!state.taskDone[key];saveState();task.classList.toggle('ck',!!state.taskDone[key]);task.querySelector('.task-chk').textContent=state.taskDone[key]?'✓':'';updateStats();return;}
+});
+
+function rebuildDay(i){
+  const d=DAYS[i],old=document.getElementById('dc-'+i),wasOpen=old.classList.contains('is-open');
+  const tmp=document.createElement('div');tmp.innerHTML=renderDay(d,i);
+  const nc=tmp.firstElementChild;if(wasOpen)nc.classList.add('is-open');old.replaceWith(nc);
+}
+
+function isAllDone(){return DAYS.every(d=>state.dayDone[d.date]);}
+
+function updateStats(){
+  const done=DAYS.filter(d=>state.dayDone[d.date]).length;
+  const tasks=Object.values(state.taskDone).filter(Boolean).length;
+  const pct=Math.round(done/28*100);
+  document.getElementById('s-days').textContent=done;
+  document.getElementById('s-tasks').textContent=tasks;
+  document.getElementById('s-remain').textContent=28-done;
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('prog-bar').style.width=pct+'%';
+  document.getElementById('prog-lbl').textContent=`${done} / 28일 완료`;
+  if(done===28&&pct===100){
+    if(!document.getElementById('celebrate').classList.contains('shown-once')){
+      setTimeout(()=>launchCelebration(),600);
+    }
+  }
+}
+
+/* ──────────── CELEBRATION ──────────── */
+function launchCelebration(){
+  const cel=document.getElementById('celebrate');
+  cel.classList.add('show','shown-once');
+  startConfetti();
+}
+document.getElementById('cel-close-btn').onclick=()=>{
+  document.getElementById('celebrate').classList.remove('show');
+  stopConfetti();
+  // actual reset
+  doReset();
+};
+
+// Reset flow: if all done → show celebration first, reset happens on cel close
+// if not all done → normal modal
+document.getElementById('reset-btn').onclick=()=>{
+  if(isAllDone()){
+    launchCelebration();
+  } else {
+    document.getElementById('modal').classList.add('show');
+  }
+};
+document.getElementById('modal-cancel').onclick=()=>document.getElementById('modal').classList.remove('show');
+document.getElementById('modal-confirm').onclick=()=>{document.getElementById('modal').classList.remove('show');doReset();};
+
+function doReset(){
+  state={dayDone:{},taskDone:{}};
+  try{localStorage.removeItem(STORE_KEY);}catch(e){}
+  build();updateStats();
+  document.getElementById('celebrate').classList.remove('shown-once');
+}
+
+/* ──────────── CONFETTI ──────────── */
+let confettiAnim=null,confettiPieces=[];
+function startConfetti(){
+  const canvas=document.getElementById('confetti-canvas');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  const colors=['#2e7d6b','#3b6fa0','#a07030','#e8c13a','#e05c7a','#9b7acc','#5bb05b','#f08030'];
+  confettiPieces=Array.from({length:160},()=>({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height-canvas.height,
+    r:Math.random()*7+3,
+    d:Math.random()*confettiPieces+1,
+    color:colors[Math.floor(Math.random()*colors.length)],
+    tilt:Math.floor(Math.random()*10)-10,
+    tiltAngle:0,tiltAngleInc:Math.random()*.07+.05,
+    vx:(Math.random()-0.5)*2.5,vy:Math.random()*3+2,
+    shape:Math.random()>.5?'circle':'rect'
+  }));
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    confettiPieces.forEach(p=>{
+      ctx.beginPath();ctx.fillStyle=p.color;ctx.globalAlpha=0.88;
+      if(p.shape==='circle'){ctx.arc(p.x,p.y,p.r,0,2*Math.PI);}
+      else{ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.tilt*Math.PI/180);ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r);ctx.restore();}
+      ctx.fill();
+      p.tiltAngle+=p.tiltAngleInc;p.y+=p.vy;p.x+=p.vx;p.tilt=Math.sin(p.tiltAngle)*12;
+      if(p.y>canvas.height){p.x=Math.random()*canvas.width;p.y=-10;}
+    });
+    ctx.globalAlpha=1;
+    confettiAnim=requestAnimationFrame(draw);
+  }
+  draw();
+}
+function stopConfetti(){
+  if(confettiAnim){cancelAnimationFrame(confettiAnim);confettiAnim=null;}
+  const canvas=document.getElementById('confetti-canvas');
+  canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+}
+
+/* ──────────── THEME ──────────── */
+(function(){
+  const btn=document.querySelector('[data-theme-toggle]'),root=document.documentElement;
+  let dark=false;
+  try{dark=localStorage.getItem('hwj_theme')==='dark';}catch(e){}
+  root.setAttribute('data-theme',dark?'dark':'light');
+  if(btn)btn.textContent=dark?'☀️':'🌙';
+  btn&&btn.addEventListener('click',()=>{
+    dark=!dark;root.setAttribute('data-theme',dark?'dark':'light');
+    if(btn)btn.textContent=dark?'☀️':'🌙';
+    try{localStorage.setItem('hwj_theme',dark?'dark':'light');}catch(e){}
+  });
+})();
+
+loadState();build();updateStats();
+</script>
+</body>
+</html>
